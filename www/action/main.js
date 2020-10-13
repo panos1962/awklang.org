@@ -48,6 +48,12 @@ Globals.main = function() {
 			}),
 
 			new Nitem({
+				title: "Do you really need spreadsheets?",
+				description: "AWK is a great tool for working with tables of data",
+				link: "https://www.thelinuxrain.com/articles/a-pivot-table-in-awk",
+			}),
+
+			new Nitem({
 				title: "Cataloging SDHC Cards",
 				description: "Cataloging SDHC Cards on Ubuntu using a bash script",
 				link: "https://grymoire.wordpress.com/2014/11/20/cataloging-sdhc-cards-on-ubuntu-using-a-bash-script",
@@ -56,6 +62,12 @@ Globals.main = function() {
 			new Nitem({
 				title: "Composing music in AWK",
 				link: "https://www.reddit.com/r/linux/comments/dtect/composing_music_in_awk",
+			}),
+
+			new Nitem({
+				title: "Old fashion gaming",
+				description: "Wolfenstein-like game in 600 lines of AWK code",
+				link: "https://hackaday.com/2016/01/15/wolfenstein-in-600-lines-of-code",
 			}),
 
 			new Nitem({
