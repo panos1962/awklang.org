@@ -1,0 +1,28 @@
+#header {
+	background-color: #AE5A41;
+}
+
+#arena {
+	background-color: red;
+}
+
+#navigator {
+	background-color: #C3CB71;
+}
+
+#sliderColumn {
+	background-color: #5A5255;
+	border-color: #559E83;
+}
+
+#main {
+	background-color: #559E83;
+}
+
+#footer {
+	background-color: #1B85B8;
+}
+
+pre {
+	background-color: #F1F0B0;
+}

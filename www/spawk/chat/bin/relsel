@@ -1,0 +1,52 @@
+#!/use/bin/bash
+
+progname=`basename $0`
+errs=
+
+[ -z "${CHAT_BASEDIR}" ] && {
+	echo "${progname}: CHAT_BASEDIR: variable not set" >&2
+	errs="yes"
+}
+
+[ -z "${AWKPATH}" ] && {
+	echo "${progname}: AWKPATH: variable not set" >&2
+	errs="yes"
+}
+
+[ -n "${errs}" ] && exit 1
+
+usage() {
+	echo "usage: ${progname} [ -k key ] [ -p projection ] { -a | [ files... ] }" >&2
+	exit 1
+}
+
+all=0
+key=
+projection=
+
+while getopts ":ak:p:" opt
+do
+	case "${opt}" in
+	a)
+		all=1
+		;;
+	k)
+		key="${OPTARG}"
+		;;
+	p)
+		projection="${OPTARG}"
+		;;
+	\?)
+		echo "${progname}: ${OPTARG}: invalid option" >&2
+		errs="yes"
+		;;
+	esac
+done
+
+[ -n "${errs}" ] && usage
+
+shift `expr ${OPTIND} - 1`
+[ ${all} -eq 1 -a $# -ne 0 ] && usage
+
+exec gawk -v all=${all} -v key="${key}" -v projection="${projection}" \
+	-f "${CHAT_BASEDIR}/awklib/relsel.awk" $*

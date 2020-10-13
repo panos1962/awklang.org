@@ -1,0 +1,32 @@
+.newsPost {
+	margin: 0 0 16px 0;
+	padding: 8px;
+	background-color: #FFFFFF;
+	border-style: solid none none solid;
+	border-width: 1px;
+	border-color: grey;
+}
+
+.newsPost h3 {
+	margin: 8px 0 0 0;
+}
+
+.newsPost p {
+	margin: 6px 0;
+}
+
+.newsDate {
+	white-space: nowrap;
+	font-style: italic;
+	color: #484848;
+}
+
+.newsDate::before {
+	content: '[ ';
+	font-style: normal;
+}
+
+.newsDate::after {
+	content: ' ]';
+	font-style: normal;
+}

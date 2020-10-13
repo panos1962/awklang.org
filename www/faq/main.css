@@ -1,0 +1,16 @@
+.question {
+	cursor: pointer;
+}
+
+.question::before {
+	content: '\25BE';
+	margin: 0 10px 0 0;
+}
+
+.questionVisible::before {
+	content: '\25B4';
+}
+
+.response {
+	display: none;
+}

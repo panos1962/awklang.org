@@ -1,0 +1,18 @@
+body,#main {
+	overflow-y: visible;
+	overflow-x: visible;
+}
+
+#mainContent {
+	padding: 0 !important;
+	max-width: none !important;
+}
+
+#header,#footer,#navigatorColumn,#sliderColumn {
+	display: none;
+}
+
+pre {
+	background-color: transparent;
+	border-style: none;
+}

@@ -1,0 +1,43 @@
+#!/use/bin/bash
+
+progname=`basename $0`
+errs=
+
+[ -z "${CHAT_BASEDIR}" ] && {
+	echo "${progname}: CHAT_BASEDIR: variable not set" >&2
+	errs="yes"
+}
+
+[ -z "${AWKPATH}" ] && {
+	echo "${progname}: AWKPATH: variable not set" >&2
+	errs="yes"
+}
+
+[ -n "${errs}" ] && exit 1
+
+usage() {
+	echo "usage: ${progname} { -a | [ files... ] }" >&2
+	exit 1
+}
+
+all=0
+
+while getopts ":a" opt
+do
+	case "${opt}" in
+	a)
+		all=1
+		;;
+	\?)
+		echo "${progname}: ${OPTARG}: invalid option" >&2
+		errs="yes"
+		;;
+	esac
+done
+
+[ -n "${errs}" ] && usage
+
+shift `expr ${OPTIND} - 1`
+[ ${all} -eq 1 -a $# -ne 0 ] && usage
+
+exec gawk -v all=${all} -f "${CHAT_BASEDIR}/awklib/relprint.awk" $*
