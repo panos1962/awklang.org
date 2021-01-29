@@ -244,7 +244,7 @@ Globals.main = function() {
 					link: "http://awka.sourceforge.net/index.html",
 				}),
 				new Nitem({
-					title: "awk.info (archive)",
+					title: "Archives",
 					nlist: [
 						new Nitem({
 							title: "awk.info (INTERNET ARCHIVE)",
@@ -254,6 +254,11 @@ Globals.main = function() {
 						new Nitem({
 							title: "awk.info (repository)",
 							link: "https://github.com/timm/lawker",
+						}),
+						new Nitem({
+							title: "comp.lang.awk FAQ (out-of-date but useful FAQ archive)",
+							description: "Useful awk FAQ collection by Russell Schulz (2002)",
+							link: "http://www.faqs.org/faqs/computer-lang/awk/faq/",
 						}),
 					],
 				}),
