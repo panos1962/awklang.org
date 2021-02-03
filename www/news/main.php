@@ -1,6 +1,20 @@
 <a name="NVG_top"></a>
 <h1>AWK news</h1>
 
+<a name="NVG_202004"></a>
+<h2>April 2020</h2>
+
+<div class="newsPost" date="Tuesday, April 14, 2020">
+<h3>Release 5.1.0 of gawk now available</h3>
+
+<p>
+Arnold Robbins announced the new 5.1.0 release of gawk.
+<br>
+Read more at <a href="https://groups.google.com/g/comp.lang.awk/c/kbPS-k2M_BY/m/b4oupp4KCAAJ"
+target="_blank">comp.lang.awk</a>.
+</p>
+</div>
+
 <a name="NVG_201803"></a>
 <h2>March 2018</h2>
 
