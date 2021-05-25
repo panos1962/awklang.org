@@ -272,6 +272,12 @@ Globals.main = function() {
 		}),
 
 		new Nitem({
+			title: "40 years of awk",
+			decription: "AWK: from 1980 to 2020"
+			link: "https://www.fosslife.org/awk-power-and-promise-40-year-old-language",
+		}),
+
+		new Nitem({
 			title: "The AWK dragon",
 			description: "AWK dragon in action!",
 			link: "dragon?child",
