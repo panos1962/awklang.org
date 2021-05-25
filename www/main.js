@@ -52,7 +52,7 @@ Globals.main = function() {
 
 				new Nitem({
 					title: "Online manual",
-					decription: "Gawk: Effective AWK Programming",
+					description: "Gawk: Effective AWK Programming",
 					link: "https://www.gnu.org/software/gawk/manual/",
 				}),
 
@@ -267,13 +267,13 @@ Globals.main = function() {
 
 		new Nitem({
 			title: "Wikipedia",
-			decription: "AWK on the Wikipedia",
+			description: "AWK on the Wikipedia",
 			link: "https://en.wikipedia.org/wiki/AWK",
 		}),
 
 		new Nitem({
 			title: "40 years of awk",
-			decription: "AWK: from 1980 to 2020",
+			description: "AWK: from 1980 to 2020",
 			link: "https://www.fosslife.org/awk-power-and-promise-40-year-old-language",
 		}),
 
