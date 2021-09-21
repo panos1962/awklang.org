@@ -3,6 +3,10 @@ News = {};
 Globals.main = function() {
 	Globals.navigatorSet(new Navigator(
 		new Nitem({
+			title: "September 2021",
+			link: "#NVG_202109",
+		}),
+		new Nitem({
 			title: "April 2020",
 			link: "#NVG_202004",
 		}),

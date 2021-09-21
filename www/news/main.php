@@ -1,6 +1,20 @@
 <a name="NVG_top"></a>
 <h1>AWK news</h1>
 
+<a name="NVG_202109"></a>
+<h2>September 2021</h2>
+
+<div class="newsPost" date="Sunday, September 19, 2021">
+<h3>BETA release of GNU Awk 5.1.1</h3>
+
+<p>
+Arnold Robbins announced BETA 5.1.1 release of GNU Awk.
+<br>
+Read more at <a href="https://groups.google.com/g/comp.lang.awk/c/t4PwuJAa-ag/m/U8QtZuiKBQAJ"
+target="_blank">comp.lang.awk</a>.
+</p>
+</div>
+
 <a name="NVG_202004"></a>
 <h2>April 2020</h2>
 
