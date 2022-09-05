@@ -5,10 +5,10 @@
 <h2>September 2022</h2>
 
 <div class="newsPost" date="Sunday, September 5, 2022">
-<h3>New release of GNU Awk 5.2.0</h3>
+<h3>Release 5.2.0 of GNU Awk now available</h3>
 
 <p>
-Arnold Robbins announced 5.2.0 release of GNU Awk.
+Arnold Robbins announced that 5.2.0 release of GNU Awk is now available.
 <br>
 Read more at <a href="https://groups.google.com/g/comp.lang.awk/c/eL7AH1sbKR0/m/-DOpBYSeBAAJ"
 target="_blank">comp.lang.awk</a>.
