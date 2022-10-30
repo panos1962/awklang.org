@@ -91,7 +91,7 @@ SPAWK stands for SQL Powered AWK and is now implemented as a gawk dynamic extens
 If you are using MySQL/MariaDB databases, you can use SPAWK to submit SQL queries
 from your gawk scripts.
 <br>
-Visit the offcial <a target="_blank" href="http://spawk.info">SPAWK site</a>
+Visit the offcial <a target="_blank" href="http://opasopa.net/spawk">SPAWK site</a>
 for more information.
 </p>
 </div>
