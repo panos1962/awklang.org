@@ -38,7 +38,7 @@ While you can download and run this version of SPAWK in your local system,
 it's strongly recommended not to do so.
 Just read this page as you may read any article in your favourite Linux magazine.
 If you find SPAWK interesting, visit the official SPAWK site at
-<a href="http://opasopa.net/spawk" target="spawk">opasopa.net/spawk</a>
+<a href="http://spawk.opasopa.net" target="spawk">spawk.opasopa.net</a>
 and download the real SPAWK following the instructions there.
 </p>
 
