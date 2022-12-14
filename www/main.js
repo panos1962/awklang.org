@@ -118,6 +118,12 @@ Globals.main = function() {
 				}),
 
 				new Nitem({
+					title: "Official tutorial (2015)",
+					description: "AWK tutorial by Aho, Kernighan, Weinberger (2015)",
+					link: "http://doc.cat-v.org/unix/v8/awktut.pdf"
+				}),
+
+				new Nitem({
 					title: "TutorialsPoint",
 					description: "AWK tutorial at tutotialspoint.org",
 					link: "https://www.tutorialspoint.com/awk",
