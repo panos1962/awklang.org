@@ -1,6 +1,20 @@
 <a name="NVG_top"></a>
 <h1>AWK news</h1>
 
+<a name="NVG_202304"></a>
+<h2>April 2023</h2>
+
+<div class="newsPost" date="Sunday, September 5, 2022">
+<h3>BETA release of GNU Awk 5.2.2 now available</h3>
+
+<p>
+Arnold Robbins announced that BETA 5.2.2 release of GNU Awk is now available.
+<br>
+Read more at <a href="https://groups.google.com/g/comp.lang.awk/c/RGhuOriUTx4"
+target="_blank">comp.lang.awk</a>.
+</p>
+</div>
+
 <a name="NVG_202209"></a>
 <h2>September 2022</h2>
 
