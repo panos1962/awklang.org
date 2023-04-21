@@ -4,7 +4,7 @@
 <a name="NVG_202304"></a>
 <h2>April 2023</h2>
 
-<div class="newsPost" date="Sunday, September 5, 2022">
+<div class="newsPost" date="Thursday, April 20, 2023">
 <h3>BETA release of GNU Awk 5.2.2 now available</h3>
 
 <p>
