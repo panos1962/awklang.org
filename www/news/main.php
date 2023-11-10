@@ -1,6 +1,29 @@
 <a name="NVG_top"></a>
 <h1>AWK news</h1>
 
+<a name="NVG_202311"></a>
+<h2>November 2023</h2>
+
+<div class="newsPost" date="Friday, November 10, 2023">
+<h3>Thanks for all who have contributed to GNU awk, by J. Naman</h3>
+
+<p>
+This is a tribute, celebration and thanks to all who have so generously contributed to the development of GNU awk over the past 35 years -- from GNU Awk 1.x (1988) through 5.3.0 (Nov 2023). Gawk is an exemplar of freely shared software developed, maintained, and expanded by an extraordinary world-wide group of volunteers.
+</p>
+<p>
+Gawk users -- students, everyday users, systems programmers, language developers -- owe an immense debt of gratitude to a vast network of contributors and collaborators who have given so much time, effort, and code to the benefit of us all. The most recent version of the User’s Guide for Gnu AWK lists 45 "Major" contributors to Gawk. Many other volunteers appear in the 989 contributions to bug-...@gnu.org since 2011. And uncounted others on comp.lang.awk.
+</p>
+<p>
+One of the awk language super-heroes is Dr Brian W Kernighan, a co-creator of the awk language. I single him out as a super-hero for releasing open-source awk in 1993, continuing to maintain it for the past 30 years!, AND expanding awk, most recently to accommodate Unicode and built-in support for CSV files. He is 81 years old and still giving.
+</p>
+<p>
+Aharon (Arnold) Robbins is an awk and Gawk super-hero, who has been the lead maintainer of Gawk since 1994, 29 years!, POSIX contributor, important author (21 books) and editor (7 books) on languages, programming, software development and utilities. Arnold began collaborating with Brian Kernighan in the early years of awk, currently co-maintains the open source onetrueawk, and continues to selflessly share his personal time, effort, code, and words with the rest of the world.
+</p>
+<p>
+All of us are most appreciative of all of you.
+</p>
+</div>
+
 <a name="NVG_202310"></a>
 <h2>October 2023</h2>
 

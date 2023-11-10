@@ -3,6 +3,22 @@ News = {};
 Globals.main = function() {
 	Globals.navigatorSet(new Navigator(
 		new Nitem({
+			title: "November 2023",
+			link: "#NVG_202311",
+		}),
+		new Nitem({
+			title: "October 2023",
+			link: "#NVG_202310",
+		}),
+		new Nitem({
+			title: "April 2023",
+			link: "#NVG_202304",
+		}),
+		new Nitem({
+			title: "September 2022",
+			link: "#NVG_202209",
+		}),
+		new Nitem({
 			title: "September 2021",
 			link: "#NVG_202109",
 		}),
