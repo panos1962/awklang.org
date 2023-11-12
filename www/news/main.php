@@ -24,6 +24,14 @@ All of us are most appreciative of all of you.
 </p>
 </div>
 
+<div class="newsPost" date="Thursday, November 2, 2023">
+<h3>Release 5.3.0 of GNU Awk is available</h3>
+
+<p>
+Arnold Robbins announced 5.3.0 release of GNU Awk.
+</p>
+</div>
+
 <a name="NVG_202310"></a>
 <h2>October 2023</h2>
 
