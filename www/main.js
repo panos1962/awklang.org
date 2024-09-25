@@ -202,6 +202,11 @@ Globals.main = function() {
 					link: "https://github.com/e36freak/awk-libs",
 				}),
 				new Nitem({
+					title: "wmawk2: mawk port for Windows",
+					description: "Port of mawk 1.9.9.6 for Windows",
+					link: "https://github.com/p-j-miller/wmawk2",
+				}),
+				new Nitem({
 					title: "More AWK libraries…",
 					nlist: [
 						new Nitem({
@@ -228,6 +233,11 @@ Globals.main = function() {
 							title: "wcwidth",
 							description: "An implementation of wcwidth/wcswidth in pure AWK",
 							link: "https://github.com/ericpruitt/wcwidth.awk",
+						}),
+						new Nitem({
+							title: "P.J.Miller's library",
+							description: "A library of useful AWK functions - in particular for use with wmawk2, but they should work with any AWK interpreter",
+							link: "https://github.com/p-j-miller/AWK_library",
 						}),
 					],
 				}),
@@ -264,7 +274,7 @@ Globals.main = function() {
 						new Nitem({
 							title: "comp.lang.awk FAQ (out-of-date but useful FAQ archive)",
 							description: "Useful awk FAQ collection by Russell Schulz (2002)",
-							link: "http://www.faqs.org/faqs/computer-lang/awk/faq/",
+							link: "http://www.faqs.org/faqs/computer-lang/awk/faq",
 						}),
 					],
 				}),
