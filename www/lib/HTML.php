@@ -283,7 +283,7 @@ class HTML {
 			</td>
 			<td id="footerRight">
 				<span id="copyright">&copy; Copyright <?php
-					print Globals::param_get("COPYRIGHT"); ?>. All Rights Reserved.</span>
+					print Globals::param_get("COPYRIGHT") . "&ndash;" . date("Y"); ?>. All Rights Reserved.</span>
 			</td>
 		</table>
 		</div>

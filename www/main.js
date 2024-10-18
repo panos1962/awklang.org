@@ -239,6 +239,11 @@ Globals.main = function() {
 							description: "A library of useful AWK functions - in particular for use with wmawk2, but they should work with any AWK interpreter",
 							link: "https://github.com/p-j-miller/AWK_library",
 						}),
+						new Nitem({
+							title: "Denis Shirokov's user level libraries",
+							description: "UID10: Generating unique pointers, ARR: Working with arrays",
+							link: "https://github.com/digics",
+						}),
 					],
 				}),
 				new Nitem({
