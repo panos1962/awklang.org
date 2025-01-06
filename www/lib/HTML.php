@@ -18,6 +18,7 @@ class HTML {
 		self::$init_ok = TRUE;
 
 		$protocol = isset($_SERVER['HTTPS']) ? "https" : "http";
+		$protocol = 'http';
 
 		switch ($_SERVER["HTTP_HOST"]) {
 		case 'localhost':		// developement
