@@ -77,7 +77,7 @@ Globals.main = function() {
 
 		new Nitem({
 			title: 'Official SPAWK site',
-			link: "http://spawk.opasopa.net",
+			link: "http://spawk.opasopa.gr",
 		}),
 	));
 };
