@@ -27,6 +27,7 @@ class Globals {
 		"AUTHOR" => "Panos Papadopoulos",
 		"COPYRIGHT" => "2017",
 		"CONTACT" => "awklang",
+		"MAILSERVER" => "gmail.com",
 	);
 
 	public static function param_get($param, $pcust = array()) {

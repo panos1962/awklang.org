@@ -187,7 +187,7 @@ class HTML {
 			?>
 			<div class="tab htab"><a href="mailto:<?php
 				print Globals::param_get("CONTACT") . "@" .
-				Globals::param_get("TITLE"); ?>" target="contact">Contact</a></div>
+				Globals::param_get("MAILSERVER"); ?>" target="contact">Contact</a></div>
 			<?php
 			self::htab("/about?child", "About");
 		}

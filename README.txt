@@ -26,3 +26,9 @@ Panos asked Arnold Robbins to receive CCs.
 ----------
 Arnold refused to get CCs from awklang@gmail.com, so now only Panos
 get email messages.
+
+2026-07-13
+----------
+Karl asked to keep only awklang@gmail.com as email contact for awklang.org.
+Arnold agreed, and Panos agreed also.
+Panos modified page content referring awklang@awklang.org.
