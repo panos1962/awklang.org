@@ -1,0 +1,51 @@
+From arnold  Thu Oct 31 13:41:07 2002
+Return-Path: <arnold@skeeve.com>
+Received: (from arnold@localhost)
+	by skeeve.com (8.11.6/8.11.6) id g9VBf7X21597
+	for arnold; Thu, 31 Oct 2002 13:41:07 +0200
+Date: Thu, 31 Oct 2002 13:41:07 +0200
+From: Aharon Robbins <arnold@skeeve.com>
+Message-Id: <200210311141.g9VBf7X21597@skeeve.com>
+To: arnold@skeeve.com
+Subject: another version of tail
+X-SpamBouncer: 1.4 (10/07/01)
+X-SBClass: OK
+Status: RO
+
+Path: iad-read.news.verio.net!dfw-artgen!iad-peer.news.verio.net!news.verio.net!newsfeed.stueberl.de!teaser.fr!proxad.net!feeder2-1.proxad.net!news1-2.free.fr!not-for-mail
+Newsgroups: comp.lang.awk
+Subject: Re: AWKed TAIL
+From: Loki Harfagr <l0k1@free.fr>
+References: <3dbf9b48.1308697601@news.netvision.net.il> <Xns92B776316D28Al0k1freefr@213.228.0.138> <3DC021BF.E07EB9C4@lbl.gov>
+Organization: Dark Design
+Message-ID: <Xns92B86CF299701l0k1freefr@213.228.0.138>
+User-Agent: Xnews/5.04.25
+Approved: IguessItshows...
+X-Face: )|)A`.4AM+}xdw3<tn(;sKopE_2m'O6F4*EAs}__BU1yS2#N[t\5jr!Upnt&-;]1q"]~]>st*Bs-tu$UQbz4:'kbCw+h/=T6YBCCDcu`oCG[Ufy~p_|U[T4PKeMW()H3*Dz
+Date: 31 Oct 2002 09:42:39 GMT
+Lines: 18
+NNTP-Posting-Date: 31 Oct 2002 10:42:39 MET
+NNTP-Posting-Host: 195.68.44.148
+X-Trace: 1036057359 news1-2.free.fr 5109 195.68.44.148
+X-Complaints-To: abuse@proxad.net
+Xref: dfw-artgen comp.lang.awk:14970
+
+Jim Mellander <jmellander@lbl.gov> wrote in news:3DC021BF.E07EB9C4@lbl.gov:
+> Looks horribly inefficient - moving 20 "blobs" around for each record! 
+> How about:
+> 
+> { line[NR]=$0; delete line[NR-21] }
+> END { for (i=NR-20; i<=NR; i++) print line[NR]}
+
+Hello again !
+
+Its more fun to compete, up to 4 players :D)
+
+Now with a circular buffer (no need for a delete to save memory)
+
+BEGIN{ TAIL=20 }
+{       line[NR%TAIL]=$0 }
+END{    GULP=NR%20
+        while (++i <= TAIL)    	print line[(i+GULP)%TAIL]
+}
+

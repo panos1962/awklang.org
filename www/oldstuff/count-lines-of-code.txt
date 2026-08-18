@@ -1,0 +1,181 @@
+From arnold@skeeve.com  Sun Jan 26 11:58:31 2003
+Return-Path: <arnold@skeeve.com>
+Received: from localhost.localdomain (skeeve [127.0.0.1])
+	by skeeve.com (8.12.5/8.12.5) with ESMTP id h0Q9wVRx018723
+	for <arnold@localhost.localdomain>; Sun, 26 Jan 2003 11:58:31 +0200
+Received: (from arnold@localhost)
+	by localhost.localdomain (8.12.5/8.12.5/Submit) id h0Q9wVDg018721
+	for arnold; Sun, 26 Jan 2003 11:58:31 +0200
+Date: Sun, 26 Jan 2003 11:58:31 +0200
+From: Aharon Robbins <arnold@skeeve.com>
+Message-Id: <200301260958.h0Q9wVDg018721@localhost.localdomain>
+To: arnold@skeeve.com
+Subject: count loc
+X-SpamBouncer: 1.4 (10/07/01)
+X-SBClass: OK
+Status: RO
+
+Path: iad-read.news.verio.net!dfw-artgen!iad-peer.news.verio.net!news.verio.net!news.maxwell.syr.edu!newspeer.radix.net!uunet!ash.uu.net!netnews.proxy.lucent.com!not-for-mail
+From: db21@ih4gp756.ih.lucent.com (Dave Beyerl)
+Newsgroups: comp.lang.awk
+Subject: Re: Awk and conting code lines...
+Date: 24 Jan 2003 09:02:51 GMT
+Organization: Lucent Technologies
+Lines: 152
+Message-ID: <b0qvfr$pue@netnews.proxy.lucent.com>
+NNTP-Posting-Host: ih4gp756.ih.lucent.com
+Xref: dfw-artgen comp.lang.awk:15938
+
+	In Article 25354 of comp.lang.awk, michel moreau
+<michelmoreau@mac.com> wrote:
+> I'm trying to build a script to count the lines in an Ada
+> source file.  To count all the lines i tried :
+> 
+> . . . 
+> 
+> Can anybody help me ?
+
+	Following is a post titled "Re: AWK script to count LOC
+(lines of code)" dated: Tue, 23 Oct 2001 that appeared in this
+group.  While it is geared towards C source code files, it
+should be adaptable to Ada or other languages.  It could be a
+good starting point for what you are attempting.  I saved it in
+the hopes of one day comparing it's results with ncsl programs
+written in C to see how the results matched.  Unfortunately,
+other things have kept me from getting to that so I can't
+comment on it's accuracy.
+
+=================================================================
+Article 20630 of comp.lang.awk:
+From: "Vishal Goenka" <vgoenka@campuspipeline.com>
+Newsgroups: comp.lang.awk
+Subject: Re: AWK script to count LOC (lines of code)
+Date: Tue, 23 Oct 2001 09:33:37 -0600
+
+I figured it had been done several times by several people. A
+few things that I added to my script that you may still find
+useful, include actually printing the raw code or comments
+rather than returning a count.  This is helpful for scripts
+beyond those that are interested in simply the count.  I also
+take care to identify "comment-markers" that might be quoted,
+which can quickly get hairy once you throw single quotes and
+double quotes in the mix.  Consider these strings for example:
+
+    " this is quoted /* comment marker not a real one "
+    " this is quoted \" and backquoted /* comment marker not a real one "
+    ' this is "quoted"  /* comment marker not a real one '
+
+
+"David Reiss" <reiss_david@NOSPAM.yahoo.com> wrote in message
+news:FT1B7.3199$Sd.289649@newsread1.prod.itd.earthlink.net...
+Yuck!  Google messed up my tabs.  Try this:
+  -----
+
+ncsl.k
+#!/usr/bin/awk -f
+# -- must use gawk to work
+
+# A program to count the number of lines in a C source code file
+# Written by David Reiss. Copyright (C) 2001 David Reiss.
+# This file may be distrubuted under the conditions of the
+# GNU GPL, version 2 or later.
+
+# I know there is another "clines.awk" (or similar) program out there.
+# I wish I had had it to help me write this, but I didn't.
+# This is all my own work.
+
+# Description
+# Lines containing only whitespace are considered "blank lines."
+# Lines containing only comments and whitespace are "comment lines."
+# Lines beginning with a '#' (with optional leading whitespace) are
+#   assumed to be preprocessor (cpp) directives.
+# Lines containing only whitespace, (optional) comments, and a single
+#   brace (either '{' or '}') are considered "brace lines."  These
+#   don't count as "real" lines because there number depends on your
+#   brace style.
+# Lines containing anything else are "real" lines.
+
+# This program has one major bug: it doesn't recognize string or
+# character literals.  If you have a string or character literal
+# containing a comment delimiter ("/*", "*/", or "//"), clines.awk
+# will interpret this as a real comment delimiter.
+
+BEGIN {
+    use_cpp_comments = 1
+    # Define some regexps for shorthand
+    cb = "/\\*"              # comment begin
+    ce = "\\*/"              # comment end
+    ws = "[ \t]*"            # whitespace
+    ic = "([^*]|\\*+[^/])*"  # all characters in a comment
+    fc = cb ic ce            # a full comment
+    if(use_cpp_comments)
+        fc = "(" fc "|" "//.*$)"
+
+    # Initialize (to set type) and document variables
+    incom = 0        # Are we in a multi-line comment as the line starts?
+    blanklines = 0   # Number of blank lines seen
+    comlines = 0     # Number of lines containing comments and whitespace
+                     # only
+    cpplines = 0     # Lines containing preprocessor directives
+    bracelines = 0   # Lines containing only a single brace
+    reallines = 0    # "Real" lines containing meaningful C code
+}
+
+$0 ~ "^" ws "$" {    # Even if inside a multi-line comment
+    blanklines++
+    next
+}
+
+# Special case: in a multi-line comment for entire line
+incom && $0 !~ ce {
+    comlines++
+    next
+}
+
+incom {    # Starts with multi-line comment, but ends
+    sub(ic ce ws, "")    # Get rid of starting comment
+    incom = 0    # No longer in a comment
+}
+
+{
+    # Clear the complete comments and whitespace
+    gsub(fc, "")
+    gsub(ws, "")
+    if( match($0, cb) )    # Does an unterminated comment start?
+    {
+        incom = 1    # The line ends in the middle of a multi-line comment
+        sub(cb ".*$", "")    # Get rid of it before processing
+    }
+}
+
+/^$/    {    # The line is now blank; it must have had only comments
+    comlines++
+    next
+}
+
+/^#/    {    # The line starts with a '#'; it must be a preprocessor
+             # directive
+    cpplines++
+    next
+}
+
+/^(\}|\{)$/    {    # The line contains only a single brace; not a
+                    # "real" line
+    bracelines++
+    next
+}
+
+{    # Any other text?  The line must contain real C code (horrors)
+    reallines++
+}
+
+END {    # Just print a report (all counters were initialized to 0)
+    print "Blank lines:\t", blanklines
+    print "Comment lines:\t", comlines
+    print "Cpp lines:\t", cpplines
+    print "Brace lines:\t", bracelines
+    print "\"Real\" lines:\t", reallines
+    print "Total lines:\t",
+             blanklines + comlines + cpplines + bracelines + reallines
+}
+

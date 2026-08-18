@@ -1,0 +1,89 @@
+From arnold  Thu Oct 31 13:39:06 2002
+Return-Path: <arnold@skeeve.com>
+Received: (from arnold@localhost)
+	by skeeve.com (8.11.6/8.11.6) id g9VBd6D21547
+	for arnold; Thu, 31 Oct 2002 13:39:06 +0200
+Date: Thu, 31 Oct 2002 13:39:06 +0200
+From: Aharon Robbins <arnold@skeeve.com>
+Message-Id: <200210311139.g9VBd6D21547@skeeve.com>
+To: arnold@skeeve.com
+Subject: cute version of tail in awk
+X-SpamBouncer: 1.4 (10/07/01)
+X-SBClass: OK
+Status: RO
+
+Path: iad-read.news.verio.net!dfw-artgen!iad-peer.news.verio.net!news.verio.net!bloom-beacon.mit.edu!newsfeed.stanford.edu!news.lbl.gov!not-for-mail
+From: Jim Mellander <jmellander@lbl.gov>
+Newsgroups: comp.lang.awk
+Subject: Re: AWKed TAIL
+Date: Wed, 30 Oct 2002 10:15:27 -0800
+Organization: Lawrence Berkeley National Laboratory
+Lines: 54
+Message-ID: <3DC021BF.E07EB9C4@lbl.gov>
+References: <3dbf9b48.1308697601@news.netvision.net.il> <Xns92B776316D28Al0k1freefr@213.228.0.138>
+NNTP-Posting-Host: laddie.lbl.gov
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Trace: overload.lbl.gov 1036001727 9708 128.3.9.79 (30 Oct 2002 18:15:27 GMT)
+X-Complaints-To: "newsmaster@lbl.gov"
+NNTP-Posting-Date: Wed, 30 Oct 2002 18:15:27 +0000 (UTC)
+X-Mailer: Mozilla 4.77 [en] (X11; U; Linux 2.4.19 i686)
+X-Accept-Language: en
+Xref: dfw-artgen comp.lang.awk:14966
+
+Loki Harfagr wrote:
+> 
+> yogevf@elal.co.il (Yogev Feldman) wrote in news:3dbf9b48.1308697601
+> @news.netvision.net.il:
+> 
+> > Hi ,
+> >       looking for the way to TAIL the 2MB file.
+> > How do it fast  with Windows AWK interpreter?
+> > Thanks
+> > Yogev
+> >
+> >
+> 
+> Made for fun, cleaning, speeding it up and putting the tail parm
+> is left 2 u 4 exercize :D)
+> 
+> #!/usr/local/bin/gawk -f
+> BEGIN{
+>         i=20
+>         while( i-- ) blob[i]=""
+> }
+> //{
+>         i=20
+>         while( --i ) blob[i+1]=blob[i]
+>         blob[1]=$0
+> 
+> }
+> END{
+>         i=20
+>         while( --i ) print blob[i]
+> }
+> 
+> But you're going to suffer heavy wait especially under Win !
+> (Better way'd be to use cygwin if you really mean to have it on Win )
+
+Looks horribly inefficient - moving 20 "blobs" around for each record! 
+How about:
+
+{ line[NR]=$0; delete line[NR-21] }
+END { for (i=NR-20; i<=NR; i++) print line[NR]}
+
+error checking, etc. left as exercise
+
+
+-- 
+Jim Mellander
+Incident Response Manager
+Computer Protection Program
+Lawrence Berkeley National Laboratory
+(510) 486-7204
+
+Your fortune for today is:
+
+Afternoon very favorable for romance.  Try a single person for a change.
+

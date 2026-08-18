@@ -1,0 +1,614 @@
+From arnold  Thu Apr 18 14:46:20 2002
+Return-Path: <arnold@skeeve.com>
+Received: (from arnold@localhost)
+	by skeeve.com (8.11.6/8.11.6) id g3IBkKS28297
+	for arnold; Thu, 18 Apr 2002 14:46:20 +0300
+Date: Thu, 18 Apr 2002 14:46:20 +0300
+From: Aharon Robbins <arnold@skeeve.com>
+Message-Id: <200204181146.g3IBkKS28297@skeeve.com>
+To: arnold@skeeve.com
+Subject: awkfe
+X-SpamBouncer: 1.4 (10/07/01)
+X-SBRule: Pattern Match (Embedded Script) (Score: 18685)
+X-SBClass: Blocked
+Status: RO
+
+Path: ord-read.news.verio.net!dfw-artgen!iad-peer.news.verio.net!news.verio.net!nntp1.roc.gblx.net!nntp.gblx.net!nntp.gblx.net!news-out.visi.com!hermes.visi.com!news
+From: damercer@mmm.com (Dan Mercer)
+Newsgroups: comp.lang.awk
+Subject: Re: Include files and the Shebang Line
+Date: 5 Apr 2002 18:06:33 GMT
+Organization: 3M Company
+Lines: 578
+Message-ID: <a8kp39$gvv$1@magnum.mmm.com>
+References: <pan.2002.04.03.19.12.06.933518.9114@iname.com>
+    <a8gfbo$2aqi$1@news.ca.inter.net> <a8i5ko$7kn$1@magnum.mmm.com>
+    <a8j8mb$hgb$1@news.ca.inter.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+X-Newsreader: knews 1.0b.0
+Xref: dfw-artgen comp.lang.awk:12647
+
+In article <a8j8mb$hgb$1@news.ca.inter.net>,
+ptjm@interlog.com (Patrick TJ McPhee) writes:
+> In article <a8i5ko$7kn$1@magnum.mmm.com>, Dan Mercer <damercer@mmm.com> wrote:
+> 
+> % I'm curious - on what systems does "#!/usr/bin/awk -f file1.awk -f"
+> % work?  It doesn't on HP-UX or Linux.  And it shouldn't.  
+> 
+> At least Solaris (with a proviso), AIX, FreeBSD, Dynix, Digital Unix, and
+> ... HP-uX. I have scripts that do this which I'm fairly certain run on
+> all those systems. I suppose I could do an explicit check if it matters.
+> 
+> Why shouldn't it work?
+> --
+> 
+> Patrick TJ McPhee
+> East York  Canada
+> ptjm@interlog.com
+
+the Linux documentation is fairly terse - from man execve:
+
+       execve() executes the  program  pointed  to  by  filename.
+       filename  must  be either a binary executable, or a script
+       starting with a line of the form "#!  interpreter  [arg]".
+       In  the latter case, the interpreter must be a valid path-
+       name for an executable which is not itself a script, which
+       will be invoked as interpreter [arg] filename.
+
+The HP-UX definition is longer (man exec):
+
+     For a script file, the initial line of a script file must begin with
+     #! as the first two bytes, followed by zero or more spaces, followed
+     by interpreter or interpreter argument, as in:
+
+          #! interpreter [argument]
+
+     One or more spaces or tabs must separate interpreter and argument.
+     The first line should end with either a newline or a null character.
+
+     When the script file is executed, the system executes the specified
+     interpreter as an executable object file.  Even in the case of
+     execlp() or execvp(), no path searching is done of the interpreter
+     name.
+
+     The argument is anything that follows interpreter and tabs or spaces.
+     If an argument is given, it is passed to the interpreter as argv[1],
+     and the name of the script file is passed as argv[2].  Otherwise, the
+     name of the script file is passed as argv[1].  argv[0] is passed as
+     specified in the exec*() call.  All other arguments specified in the
+     exec*() call are passed following the name of the script file (that
+     is, beginning at argv[3] if there is an argument; otherwise, at
+     argv[2]).
+
+     Some interpreters process the interpreter and the argument internally,
+     and do not provide the interpreter and the argument to the users
+     script.
+
+     If the initial line of the script file exceeds a system-defined
+     maximum number of characters, exec*() fails.  The minimum value for
+     this limit is 32.
+
+These are based on the SVID definitions of exec.
+
+Given the two scripts:
+
+      $ cat awk1
+      #!/usr/bin/gawk -f
+      BEGIN {
+      print "awk1 entered"
+      }
+      $ cat awk2
+      #!/usr/bin/gawk -f /tmp/awk1 -f
+      BEGIN {
+      print "awk2 entered"
+      }
+      $ ./awk2
+      awk2: fatal: can't open source file " /tmp/awk1 -f"
+      for reading (No such file or directory)
+
+In this case, gawk received as argv's
+
+   argv[1] = "-f /tmp/awk1 -f"
+
+getopts parsed out the -f and treated the rest of the text as a
+contiguous OPTARG - so the OPTARG was " /tmp/awk1 -f" - note the leading
+space.
+
+BSD derived systems might treat this differently,  but certainly
+not HP-UX which is SVID conformant.  Might I suggest a little
+experimentation?
+
+
+I will once again post my awkfe program (I need to LGPL this sucker
+someday) that allows for includes.  First the man page:
+
+======================================================================
+Name
+     awkfe - front end for awk
+
+Synopsis
+     awkfe [-h] [awk options] files ...
+
+Description
+     AWK is a program used to filter text using regular expression pattern
+     matching.  AWK scripts can be made directly executable with the use of
+     an exec line like:
+
+          #!/usr/bin/awk -f
+
+     Exec examines the first two bytes of an executable file for it's magic
+     number. The special magic number '#!' instructs exec to parse the
+     first line for the full path name of a shell executable and up to 1
+     additional option to pass.  Exec then calls the shell executable
+     passing it the option,  if there is one, and the name of the script
+     file.  Thus,  the argument array passed to /usr/bin/awk of a file
+     named /usr/local/bin/tstawk (where /usr/local/bin is in the PATH),
+     invoked as:
+
+          tstawk -F: db_data
+
+     with a first line of:
+
+          #!/usr/bin/awk -f
+
+     would be:
+
+          argv[0] = "/usr/local/bin/tstawk"
+          argv[1] = "-f"
+          argv[2] = "/usr/local/bin/tstawk"
+          argv[3] = " -F:"
+          argv[4] = "db_data"
+
+     AWK supports code reusability with the "-f" option.  You can include
+     multiple awk scripts by using multiple "-f" options.  However,  if you
+     try that within a self-contained script,  for instance using:
+
+          #!/usr/bin/awk -f awk_db_funs -f
+
+     then the array passed to awk is:
+
+          argv[0] = "/usr/local/bin/tstawk"
+          argv[1] = "-f"
+          argv[2] = "awk_db_funs -f"
+          argv[3] = "/usr/local/bin/tstawk"
+          argv[4] = " -F:"
+          argv[5] = "db_data"
+
+     and AWK will complain that it can't open file "awk_db_funs -f" . In
+     addition, exec truncates the parsed line to 32 characters beginning
+     with the original "/".
+
+     Awkfe was written to allow code reuse with a simple,  familiar syntax.
+     You insert an exec tag line pointing at the awkfe executable prior to
+     your original AWK tag line:
+
+          #!/usr/local/bin/awkfe
+          #!/usr/bin/awk -f
+
+     Then to include resuable code segments, you use #include statements.
+     For instance:
+
+          #!/usr/local/bin/awkfe
+          #!/usr/bin/awk -f
+          #include <db_data>
+
+     The second tag line is only required if you want to point at a
+     different awk ,  for instance at GNU awk (gawk):
+
+          #!/usr/local/bin/awkfe
+          #!/usr/local/bin/gawk
+
+     The second tag line does not require the -f option since that is
+     ignored anyway.
+
+Note!
+     Awkfe ceases to scan for #include lines after the first non-commented
+     line.  So placing a blank line after your #include lines will result
+     in faster processing.
+
+External Influences
+     There are two different #include formats that are supported:
+
+          #include <db_data>
+
+     and
+
+          #include "/usr/local/awk/db_data"
+
+     The second format merely passes the literal string enclosed in double
+     quotes to awk. With the first format, awkfe extracts the file name and
+     attempts to resolve the name to a file name using the AWKPATH
+     environment variable by opening for read any filename constructed from
+     elements of the AWKPATH and the #include name.  If no AWKPATH variable
+     exists, awkfe constructs one from the base directory of the executable
+     script, the "." directory and the user's HOME directory.
+
+Diagnostics
+     Awkfe returns error messages if it can't resolve a #include <db_data>
+     filename,  or for a poorly constructed #include line or memory
+     problems.  All other diagnostics are generated by AWK.
+
+Return Value
+     For errors noted above, awkfe will return either a 1 or a 2.  All
+     other errors are returned by awk.
+
+Examples
+     #!/usr/local/bin/awkfe
+     #!/usr/local/bin/gawk
+     #include <rddesc>
+     #include "/usr/local/awk/printload"
+
+     BEGIN { ...
+
+See Also
+     awk(1)
+======================================================================
+
+
+
+Now the program:
+
+======================================================================
+/***************************************************************
+ *  Program Name  :  $Source: /home/dam/News/RCS/awkfe.c,v $
+ *  Version       :  $Revision: 1.3 $
+ *  Date Created  :  03-28-96
+ *  Author        :  Dan A. Mercer
+ *  Last Modified :  $Date: 1996/03/28 16:49:07 $
+ *  Modified By   :  $Author: dam $
+ *  
+ *  Description   :  Front end for awk scripts that allows includes
+ ***************************************************************/
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <fcntl.h>
+#include <malloc.h>
+#include <string.h>
+#include <unistd.h>
+#include <errno.h>
+#ifndef DEF_AWK
+#   define  DEF_AWK         "/usr/bin/awk"
+#endif
+#define  INC_STR         "#include "
+#define  START_GLOBAL    '<'
+#define  END_GLOBAL      '>'
+#define  LOCAL_IND       '"'
+
+int ap;
+char *progname;
+char **ap_arr;
+
+void help(msg)
+   char *msg;
+   
+   {
+   fprintf (stderr,
+      "%s: add include files to awk standalone scripts\n"
+      "%s%s"
+      "Format: #!/full/path/name/of/%s\n"
+      "        the full path name should not exceed 30 chars\n",
+         progname,
+         (msg) ? msg : "",
+         (msg) ? "\n\n" : "",
+         progname
+         );
+   exit((msg) ? 1 : 0);
+   }
+
+static char *getInc(inc)
+   char   *inc;
+   
+   {
+   char *loc;
+   char *p,*q;
+   int i;
+   int fd;
+   char buf[512];
+
+   if (NULL == (q = strpbrk(inc, "<\"")))
+      {
+      fprintf(stderr,"Unrecognized path format\n");
+      return NULL;
+      }
+   
+   if (NULL == (loc = strdup(q)))
+      {
+      fprintf(stderr,"getInc: Can't dup include line\n");
+      return NULL;
+      }
+
+   switch (*loc)
+      {
+      case START_GLOBAL   :
+         if (NULL == (p = strchr(loc+1,END_GLOBAL)))
+            {
+            fprintf(stderr,"Misformed path - missing trailing '%c'\n"
+                           "in loc: '%s'\n",
+               END_GLOBAL,loc);
+            return NULL;
+            }
+         else
+            *p = '\0';
+         /* ok,  now the fun part - searching the awkpath for a match */
+         for (i=0;i<ap && ap_arr[i];i++)
+            {
+            sprintf(buf,"%s/%s", ap_arr[i],loc+1);
+            if (EOF < (fd = open(buf,O_RDONLY)))
+               {
+               close(fd);
+               return strdup(buf);
+               }
+            }
+         return NULL;
+         break;
+      case LOCAL_IND   :
+         /* just clean up and return path - awk will verify */
+         if (NULL == (p = strchr(loc+1,LOCAL_IND)))
+            {
+            fprintf(stderr,"Misformed path - missing trailing '%c'\n",
+               LOCAL_IND);
+            return NULL;
+            }
+         else
+            *p = '\0';
+         break;
+      default    :
+         fprintf(stderr,"Unrecognized path format\n");
+         return NULL;
+         break;
+      }
+   
+   return loc+1;
+   }
+    
+
+char *read2buf(fn, sizep,errors)
+   char   *fn;
+   off_t  *sizep;
+   char   **errors;
+
+   {
+   int         fd;
+   char        *buf;
+   struct stat statBuf;
+
+   if (stat (fn, &statBuf))
+      {
+      *errors = "read2buf error on stat of file";
+      return NULL;
+      }
+
+   if (sizep) *sizep = statBuf.st_size;
+
+   /*
+   * the allocated buffer must be one character greater than input file
+   * this insures last byte will be NUL
+   */
+   if (NULL == (buf = (unsigned char *) malloc (statBuf.st_size + 1)))
+      {
+      *errors = "read2buf error mallocing input buf";
+      return NULL;
+      }
+
+   if (EOF == (fd = open (fn, O_RDONLY)))
+      {
+      *errors = "Error on opening file";
+      return NULL;
+      }
+
+   if (statBuf.st_size != read (fd, buf, statBuf.st_size))
+      {
+      *errors = "Error on reading file";
+      return NULL;
+      }
+
+   buf[statBuf.st_size] = '\0';        /* terminate buffer */
+
+   close (fd);
+
+   return buf;
+   }
+
+main (argc,argv)
+
+   int    argc;
+   char **argv;
+
+{
+extern char *optarg;
+extern int optind;
+extern int optopt;
+extern int errno;
+extern int errno;
+extern char *sys_errlist[];
+char errmsg[256];
+char *rderr;
+int opt;
+int i;
+int linecnt;
+int ac;
+char *p,*q,*r,*s;
+char *filepath;
+char *filewa1;
+off_t fsize;
+char *contents;
+char *awkpath;
+char *awkwa1;
+char *home;
+char *awk;
+char *al[256];
+
+progname = (NULL == (p = strrchr(argv[0],'/'))) ? argv[0] : p + 1;
+
+while ((opt = getopt(argc, argv, ":h")) != EOF)
+   {
+   switch (opt)
+      {
+      case 'h'    :
+         help(NULL);
+         break;
+      case ':'   :
+         sprintf(errmsg,"%s: Option -%c requires an argument\n",
+                 progname, optopt);
+         help(errmsg);
+      case '?'   :
+         sprintf(errmsg,"%s: Unrecognized option: -%c\n",
+                 progname, optopt);
+         help(errmsg);
+      }
+   }
+
+if (0 == argc - optind)
+   help("Missing file name");
+   
+filepath = argv[optind];
+
+/*
+ * read in the AWKPATH
+ */
+if (NULL == (awkpath = getenv("AWKPATH")))
+   {
+   if (NULL == (awkpath = (char *) calloc(1,512)))
+      {
+      perror ("Can't allocate default AWKPATH");
+      exit(2);
+      }
+   /*
+    * read in the HOME dir
+    */
+   home = getenv("HOME");
+   /*
+    * read in the path of the executable
+    */
+   if (NULL == (filewa1 = strdup(filepath)))
+      {
+      perror ("Can't allocate filepath copy");
+      exit(2);
+      }
+   if (s = strrchr(filewa1,'/'))
+      {
+      *s = '\0';
+      sprintf(awkpath,"%s:%s:%s",filewa1,".",(home) ? home : ".");
+      }
+   else   
+      sprintf(awkpath,"%s:%s:%s",".",(home) ? home : ".");
+   }
+
+if (NULL == (awkwa1 = strdup(awkpath)))
+   {
+   perror ("Can't allocate copy of AWKPATH");
+   exit(2);
+   }
+
+/*
+ * Now use strtok to parse the AWKPATH
+ */
+for (ap=0,p=awkwa1;*p;p++)
+   if (':' == *p)
+      ap++;
+ap++;
+
+if (NULL == (ap_arr = (char **) calloc(ap + 1,sizeof (char *))))
+   {
+   perror ("Can't allocate array for AWKPATH");
+   exit(2);
+   }
+
+ap_arr[ap] = NULL;
+
+for (p=q=awkwa1,i=0;p=strtok(q,":");i++,q=NULL)
+   ap_arr[i] = p;
+
+if (NULL == (contents = read2buf(filepath,&fsize,&rderr)))
+   {
+   sprintf(errmsg,"%s: %s", rderr, sys_errlist[errno]);
+   help(errmsg);
+   }
+
+if (0 == fsize) 
+   {
+   sprintf(errmsg,"the input file has zero size");
+   help(errmsg);
+   }
+
+/*
+ * Now parse the file looking for #include lines
+ */
+awk = NULL;
+for (ac=1,p=q=contents,linecnt=i=0;i<fsize;i++,q++)
+   {
+   if ('\n' == *q)
+      {
+      *q = '\0';
+      if (*p && ('#' == *p))
+         {
+         if (1 == linecnt)
+            {
+            /* look for alternate awk path */
+            if ('!' == *(p+1))
+               {
+               if (s = strchr(p,'/'))
+                  {
+                  if (r = strchr(s,' ')) *r = '\0';
+                  awk = s;
+                  }
+               }
+            awk = (awk) ? awk : DEF_AWK;
+            }
+         linecnt++;
+         
+         if (0 == strncmp(p,INC_STR,sizeof(INC_STR) - 1))
+            {
+            if (NULL == (s = getInc(p)))
+               {
+               fprintf(stderr,"Can't resolve include line:\n%s\n"
+                              "AWKPATH=%s\n",p,awkpath);
+               exit(2);
+               }
+            al[ac++] = "-f";
+            al[ac++] = s;
+            }
+         p = q+1;
+         }
+      else         /* Blank or non-comment line terminates scan */
+         break;
+      }
+   }
+
+if (NULL == (s = strrchr(awk,'/')))
+   awk = DEF_AWK;
+
+al[0]    = filepath;
+al[ac++] = "-f";
+al[ac++] = filepath;
+
+/* now add other command line options */
+for (i=optind+1;i<argc;i++)
+   al[ac++] = argv[i];
+   
+al[ac] = NULL;
+
+#ifdef DEBUG
+for(i=0;i<ac;i++)
+   printf("%d: %s\n", i, al[i]);
+#endif
+
+execv(awk, al);
+
+perror("Execv failed");
+
+exit(2);
+}
+
+======================================================================
+
+-- 
+Dan Mercer
+damercer@mmm.com
+
+
+
+Opinions expressed herein are my own and may not represent those of my employer.
+

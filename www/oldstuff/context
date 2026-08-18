@@ -1,0 +1,174 @@
+Path: iad-read.news.verio.net!dfw-artgen.news.verio.net!iad-peer.news.verio.net!news.verio.net!solaris.cc.vt.edu!news.vt.edu!newspump.monmouth.com!newspeer.monmouth.com!nntp.msen.com!uunet!ash.uu.net!news
+From: damercer@mmm.com (Dan Mercer)
+Newsgroups: comp.lang.awk
+Subject: Re: #!/bin/awk -f style and shell vars
+Date: 8 Mar 2001 21:41:24 GMT
+Organization: 3M Company
+Lines: 154
+Message-ID: <988ua4$4kt$1@magnum.mmm.com>
+References: <m3n1ax4dr9.fsf@gnus.cvs.983032537> <QWwp6.163$%L5.7399@insync>
+    <m3n1aw3dwd.fsf@gnus.cvs.983032537> <988703$3gf$1@magnum.mmm.com>
+    <m3k8602iyx.fsf@gnus.cvs.983032537>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+X-Newsreader: knews 1.0b.0
+Xref: dfw-artgen.news.verio.net comp.lang.awk:8051
+
+In article <m3k8602iyx.fsf@gnus.cvs.983032537>,
+Harry Putnam <reader@newsguy.com> writes:
+> damercer@mmm.com (Dan Mercer) writes:
+> 
+> [...]
+>  
+>> There are two ways to set awk variables from the command line:
+>> using the -v option (a nawk addition) and the original old awk
+>> method of putting vname=value strings in the arglist.  You have
+>> used the latter method.  But vars set by that method are not
+>> available in the BEGIN block since the arglist is not evaluated
+>> until the BEGIN block ends.  Vars set with the -v option are. 
+>> The one advantage to setting the vars in the arglist is that you
+>> could set separate vars for different filenames :
+> 
+> Ok, that clears it up...  I even knew some of that but let myself get
+> confused by the executable awk script `-f'.  So it was really nothing
+> more than a placement error.  That is, where to put the -voption.
+> 
+>> 
+>>    cmd.awk -vGlobal=xxx local1=aaa file1 local1=bbb file2 ...
+> 
+> Yup, now I get it...
+>  
+> 
+> [...]
+> 
+>> How is that confusing?  You passed it the date in the place
+> 
+> I guess it was only confusing to us intellectually challenged.. he he
+> 
+>> of a file name.  However,  you could have:
+>> 
+>>    BEGIN {
+>>       now = ARGV[1]
+>>       ARGC--
+>>       for (i=1;i<ARGC;i++)
+>>          ARGV[i] = ARGV[i+1]
+>>       ...
+>>    }
+>> 
+>> I do just this for my "context" awk program that greps a file for
+>> a pattern and surrounds it with lines of context,  with the grepped
+>> pattern highlighted with inverse video. 
+> 
+> I'm not sure what is happening in that code, but I'd like to see the
+> whole `context' program if you are willing.
+> 
+> It wouldn't be posted on the ftp site that Arnold R. announced as
+> `coming soon' a while back would it?  If so, is there an ftp address
+> available now?
+> 
+> If not, would you mind either posting it here or mailing to me direct?
+
+
+Here ya go.  Bon Apetit!
+
+#!/usr/bin/gawk -f
+# We use gawk so we can delete arrays
+function help(helpmsg) {
+print "Format: context o=options s=string l=context_lines[default +/-2] files"
+   if (length(helpmsg)) print "\n" helpmsg "\n"
+   exit
+}
+function fatal(msg) {
+   print msg
+   exit
+}
+BEGIN {
+# Format: context o=options s=string l=context_lines[default +/-2] files
+# options are extracted and arglist is reset to files
+# get standout chars
+smsocmd = "tput smso"
+smsocmd | getline smso
+close(smsocmd)
+rmsocmd = "tput rmso"
+rmsocmd | getline rmso
+close(rmsocmd)
+re = ""
+ln = 2
+ofn = ""
+if (ARGC < 3)
+   help("Missing args")
+for (i=1;i<ARGC;i++)
+   {
+   if (ARGV[i] ~ /l=/)
+      {
+      ln = substr(ARGV[i],3)+0
+      if (!ln) fatal("Lines of context must be non-zero - default 2")
+      }
+   else if (ARGV[i] ~ /o=/)
+      {
+      option = substr(ARGV[i],3)
+      # currently,  only ignorecase option supported
+      if ("-i" == option) {
+         IGNORECASE = 1
+         }
+      else {
+         fatal("Unknown option " option)
+         }
+      }
+   else if (ARGV[i] ~ /s=/)
+      {
+      re = substr(ARGV[i],3)
+      }
+   else
+      break
+   }
+# ARGV[i] must now become ARGV[1]
+j=1
+k=ARGC
+while (i<k) ARGV[j++] = ARGV[i++]
+ARGC = j
+if (!length(re))
+   fatal("You must supply a context string")
+}
+1==FNR { fn = FILENAME; delete used ; delete SAVED }
+$0 ~ re {
+if (fn != ofn) print fn ":"
+ofn = fn
+j=start
+for (i=0;i<ln;i++) {
+    if (SAVED[j]) {
+       if (!used[j]) printf "%5d: %s\n", j, SAVED[j]
+       }
+    used[j] = 1
+    j++
+    }
+printf "%s%5d: %s%s\n", smso, FNR, $0, rmso
+used[FNR] = 1
+for (i=1;i<=ln;i++) {
+    getline
+    if ($0 ~ re)
+       printf "%s%5d: %s%s\n", smso, FNR, $0, rmso
+    else
+       printf "%5d: %s\n", FNR, $0
+    SAVED[FNR] = $0
+    used[FNR] = 1
+    }
+next
+}
+{
+SAVED[FNR] = $0
+i = FNR - ln
+if (i>0) {
+   delete used[i]
+   delete SAVED[i]
+   }
+start = (i>0) ? i+1 : 1
+}
+
+-- 
+Dan Mercer
+damercer@mmm.com
+
+
+
+Opinions expressed herein are my own and may not represent those of my employer.

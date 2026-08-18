@@ -1,0 +1,170 @@
+From peter.tillier@btinternet.com  Thu Feb 14 13:35:06 2002
+Return-Path: <peter.tillier@btinternet.com>
+Received: from localhost (skeeve [127.0.0.1])
+	by skeeve.com (8.11.6/8.11.6) with ESMTP id g1EBZ4g07016
+	for <arnold@localhost>; Thu, 14 Feb 2002 13:35:05 +0200
+Received: from actcom.co.il [192.114.47.1]
+	by localhost with POP3 (fetchmail-5.9.0)
+	for arnold@localhost (single-drop); Thu, 14 Feb 2002 13:35:05 +0200 (IST)
+Received: by actcom.co.il (mbox arobbins)
+ (with Cubic Circle's cucipop (v1.31 1998/05/13) Thu Feb 14 13:35:26 2002)
+X-From_: peter.tillier@btinternet.com Thu Feb 14 11:03:29 2002
+Received: from lmail.actcom.co.il by actcom.co.il  with ESMTP
+	(8.11.6/actcom-0.2) id g1E93Nx26245 for <arobbins@actcom.co.il>;
+	Thu, 14 Feb 2002 11:03:24 +0200 (EET)  
+	(rfc931-sender: mail.actcom.co.il [192.114.47.13])
+Received: from f7.net (consort.superb.net [209.61.216.22])
+	by lmail.actcom.co.il (8.11.6/8.11.6) with ESMTP id g1E8NMw10936
+	for <arobbins@actcom.co.il>; Thu, 14 Feb 2002 10:23:22 +0200
+Received: from dent.axion.bt.co.uk (dent.axion.bt.co.uk [132.146.16.161])
+	by f7.net (8.11.6/8.11.6) with ESMTP id g1E8NCF19678
+	for <arnold@skeeve.com>; Thu, 14 Feb 2002 03:23:12 -0500
+Received: from relay.axion.bt.co.uk by dent (local) with ESMTP;
+          Thu, 14 Feb 2002 08:21:43 +0000
+Received: from BT885265 (actually [10.243.194.224]) by relay with Internet 
+          with SMTP; Thu, 14 Feb 2002 08:25:00 +0000
+Message-ID: <001901c1b530$c306b960$e0c2f30a@BT885265>
+Reply-To: Peter S Tillier <peter.tillier@btinternet.com>
+From: Peter S Tillier <peter.tillier@btinternet.com>
+To: arnold <arnold@skeeve.com>
+Subject: Fw: embedding awk script in DOS batch file
+Date: Thu, 14 Feb 2002 08:22:35 -0000
+Organization: Private
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 5.50.4522.1200
+X-MimeOLE: Produced By Microsoft MimeOLE V5.50.4522.1200
+MIME-version: 1.0
+Content-type: text/plain; charset="iso-8859-1"
+Content-transfer-encoding: 7bit
+X-SpamBouncer: 1.4 (10/07/01)
+X-SBClass: OK
+Status: RO
+
+----- Original Message -----
+From: "Alan Linton" <alan@cranley.demon.co.uk>
+Newsgroups: comp.lang.awk,alt.msdos.batch
+Sent: Sunday, February 10, 2002 2:57 PM
+Subject: Re: embedding awk script in DOS batch file
+
+
+> In message <227a55e9.0202081125.76388a25@posting.google.com>, Eric
+> Pement <pemente@northpark.edu> writes
+> >What is the general technique for embedding a GNU awk script into an
+> >MS-DOS batch file?  I want the batch file to invoke awk, calling
+> >itself as the external awk script. I.e.,
+> >
+> >   @echo off
+> >   :: Sample recursive DOS batch file with awk
+> >   echo Starting the batch file
+> >   awk -f %0 %1
+> >
+> >The trick is, how do I get awk to skip over the DOS elements of the
+> >batch file and only "see" the awk script parts? My goal is not to
+> >create an intermediate file. That is, I know that I could do this:
+> >
+> >   @echo off
+> >   :: DOS batchfile
+> >   echo BEGIN{FS="+"}   >temp.awk
+> >   echo { print $2 }   >>temp.awk
+> >   awk -f temp.awk %1
+> >   del temp >NUL
+> >
+> >and in this way I could "embed" an awk script within a DOS batch
+file.
+> >But I don't want to create an intermediate temp file on disk. I want
+> >to embed the full awk script as a block within the DOS .BAT file.
+> >Failing this, is there a way to accomplish this within a 4DOS .BTM
+> >file? Thanks in advance.
+>
+> Eric,
+>
+> This seems to work: -
+>
+> @echo off
+> dir c:\djgpp\bin\awk*
+> awk "/^goto pastawk/{x=1;next};/^:pastawk/{x=0};x" %0 | awk -f - %1
+> goto pastawk
+> #awk script starts here ---------------------------
+> BEGIN{
+>    print "Awk script running"
+>    print "ARGC=",ARGC
+>    for (i=0; i<ARGC; i++) print "ARGV["i"]=",ARGV[i]
+>    print "Hello World!"
+> }
+> {print FILENAME,NR,$0}
+> END {print "end of awk script"}
+> #awk script ends here -----------------------------
+> :pastawk
+> echo back in MSDOS
+>
+> I put this into a file called awkinbat.bat. Here's a test run: -
+>
+> C:\My Documents\Alan\Awk>ver
+>
+> Windows Millennium [Version 4.90.3000]
+>
+>
+> C:\My Documents\Alan\Awk>type awkinbat.dat
+> first line of data file
+> second line of data file
+>
+> C:\My Documents\Alan\Awk>awkinbat.bat awkinbat.dat
+>
+>   Volume in drive C has no label
+>   Volume Serial Number is 0F20-18E0
+>   Directory of C:\djgpp\bin
+>
+> AWK95    EXE       139,264  03/06/99  18:35 awk95.exe
+> AWK      EXE         2,048  11/08/01  12:10 awk.exe
+>           2 file(s)        141,312 bytes
+>           0 dir(s)       31,937.03 MB free
+> Awk script running
+> ARGC= 2
+> ARGV[0]= awk
+> ARGV[1]= awkinbat.dat
+> Hello World!
+> awkinbat.dat 1 first line of data file
+> awkinbat.dat 2 second line of data file
+> end of awk script
+> back in MSDOS
+> C:\My Documents\Alan\Awk>
+>
+> Notes:
+>
+> 1) I get the same results using gawk 3.1.0 and awk95 so it is somewhat
+> independent of the awk version but I can't be sure that it works for
+> different versions of Windows and DOS.
+>
+> 2) %0 contains the name of the batch file
+>
+> 3) I used a goto to jump over the awk script so that MSDOS does not
+try
+> to run it
+>
+> 4) I used an inline awk script to select the awk code from the batch
+> file and pipe it into another awk process
+>
+> Hope this helps
+> --
+> Alan Linton
+> please reply to the newsgroup only
+> due to excessive spam any email will be automatically rejected
+
+Arnold,
+
+I don't know if you've seen this but I thought that it might be a useful
+addition to the "freefriends" archive.  Another handy effort by Alan
+Linton.
+
+Regards,
+Peter
+--
+Peter S Tillier
+"Who needs perl when you can write dc in sed?"
+Opinions expressed are my own and not necessarily
+those of my employer.
+
+Best wishes
+
+
